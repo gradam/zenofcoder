@@ -1,0 +1,14 @@
+version: '2'
+services:
+  web:
+    build:
+      context: ./zenofcoder-web
+      dockerfile: Dockerfile-web.docker
+    restart: always
+    command: bash web-production.sh
+
+  db:
+    restart: always
+
+  nginx:
+    restart: always
