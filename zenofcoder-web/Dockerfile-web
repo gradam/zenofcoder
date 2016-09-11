@@ -1,3 +1,2 @@
 FROM zenofcoder/base
-LABEL "application"="zenofcoder-web"
 COPY . .
