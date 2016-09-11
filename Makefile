@@ -20,8 +20,8 @@ build: build-data build-db build-nginx build-base build-web
 
 #rebuild images
 rebuild:
-    clean-all
-    build
+	clean-all
+	build
 
 #run docker images
 run-db:
