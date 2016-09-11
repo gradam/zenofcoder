@@ -20,9 +20,6 @@ services:
   db:
     image: postgres:latest
     container_name: "zenofcoder-db"
-    build:
-      context: ./db
-      dockerfile: Dockerfile-db
     labels:
       application: "zenofcoder-db"
     expose:
