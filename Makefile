@@ -18,10 +18,6 @@ build-nginx:
 	@docker-compose build nginx
 build: build-data build-db build-nginx build-base build-web
 
-#rebuild images
-rebuild:
-	clean-all
-	build
 
 #run docker images
 run-db:
@@ -115,6 +111,10 @@ reload-nginx:
 	@make build-nginx
 	@make run-nginx
 
+
+#rebuild images
+rebuild: clean-all build
+
 # open shell in container
 shell-web:
 	@docker exec -it zenofcoder-web bash
@@ -126,8 +126,8 @@ logs:
 
 # Reload static files in web container
 reload_static:
-		@docker exec zenfocoder-web python manage.py collectstatic --no-input
+	@docker exec zenfocoder-web python manage.py collectstatic --no-input
 
 # Reload static files automatically after every change.
 dev_static:
-		@when-changed -1 -v -r `find ./zenofcoder-web/* -name 'static'` -c make reload_static
+	@when-changed -1 -v -r `find ./zenofcoder-web/* -name 'static'` -c make reload_static
