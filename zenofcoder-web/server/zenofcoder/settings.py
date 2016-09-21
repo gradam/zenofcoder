@@ -39,6 +39,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third party
+    'django_comments',
+    'mptt',
+    'tagging',
+    'zinnia',                   # https://github.com/Fantomas42/django-blog-zinnia
+    'social_auth',              # https://github.com/omab/django-social-auth
 )
 
 MIDDLEWARE_CLASSES = (
