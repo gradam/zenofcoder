@@ -121,8 +121,16 @@ shell-web:
 shell-db:
 	@docker exec -it zenofcoder-db bash
 
+logs-web:
+	@docker-compose logs -f | grep {{ project_name }}-web
+logs-db:
+	@docker-compose logs -f | grep {{ project_name }}-db
+logs-https:
+	@docker-compose logs -f | grep {{ project_name }}-https
+logs-testing:
+	@docker-compose logs -f | grep {{ project_name }}-testing
 logs:
-	@docker-compose logs
+	@docker-compose logs -f
 
 # Reload static files in web container
 reload_static:
