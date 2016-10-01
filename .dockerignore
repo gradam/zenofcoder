@@ -1,0 +1,41 @@
+### Python template
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+*.sqlite3
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+team_up-web/server/pytest.ini
+settings_tests.py
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+docs/_build/
+
+### Redis template
+# Ignore redis binary dump (dump.rdb) files
+*.rdb
+
+### SublimeText template
+# cache files for sublime text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# workspace files are user-specific
+*.sublime-workspace
+
+### pycharm folder
+.idea

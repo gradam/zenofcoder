@@ -1,21 +1,54 @@
 version: '2'
 
 services:
-  web:
+  server:
     env_file: .env
-    container_name: "zenofcoder-web"
+    container_name: "zenofcoder-web-server"
     build:
-      context: ./zenofcoder-web
-      dockerfile: Dockerfile-web
+      context: ./zenofcoder-web/server
+      dockerfile: Dockerfile-web-server
     labels:
-      application: "zenofcoder-web"
+      application: "zenofcoder-web-server"
     volumes:
       - /opt/zenofcoder/static
+      - /opt/zenofcoder/logs
     expose:
       - "8000"
     depends_on:
       - db
       - redis
+
+  client:
+    build:
+      context: ./zenofcoder-web/client
+      dockerfile: Dockerfile-web-client
+    container_name: "zenofcoder-web-client"
+    labels:
+      application: "zenofcoder-web-client"
+
+  nginx:
+    container_name: "zenofcoder-nginx"
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile-nginx
+    volumes_from:
+      - server
+      - client
+    ports:
+      - "80:80"
+    labels:
+      application: "zenofcoder-nginx"
+    depends_on:
+      - server
+
+
+  redis:
+    image: redis:latest
+    container_name: "zenofcoder-redis"
+    labels:
+      application: "zenofcoder-redis"
+    expose:
+      - "6379"
 
   db:
     image: postgres:latest
@@ -33,25 +66,3 @@ services:
     volumes:
       - /var/lib/postgresql
     command: /bin/true
-
-  nginx:
-    container_name: "zenofcoder-nginx"
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile-nginx
-    volumes_from:
-      - web
-    ports:
-      - "80:80"
-    labels:
-      application: "zenofcoder-nginx"
-    depends_on:
-      - web
-
-  redis:
-    image: redis:latest
-    container_name: "zenofcoder-redis"
-    labels:
-      application: "zenofcoder-redis"
-    expose:
-      - "6379"

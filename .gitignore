@@ -2,3 +2,5 @@ virtenv
 __pycache__
 db.sqlite3
 .idea/
+node_modules
+typings

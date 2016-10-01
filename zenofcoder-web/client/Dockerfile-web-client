@@ -1,0 +1,6 @@
+FROM node:latest
+ENV DIRPATH /opt/zenofcoder/
+RUN mkdir -p $DIRPATH/zenofcoder-web/client
+WORKDIR $DIRPATH/zenofcoder-web/client
+ADD . .
+RUN npm install
