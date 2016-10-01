@@ -15,6 +15,3 @@ touch /opt/zenofcoder/logs/django-errors.log
 touch /opt/zenofcoder/logs/django-debug.log
 tail -n 0 -f /opt/zenofcoder/logs/*.log &
 
-# create admin user if doesn't exist
-echo "from django.contrib.auth.models import User;User.objects.create_superuser('admin', 'kuba.semik@gmail.com', 'admin') if not User.objects.filter(username='admin').exists() else print('admin already created')" | python manage.py shell
-
