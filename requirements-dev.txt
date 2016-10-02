@@ -1,7 +1,1 @@
-#it should be sum of all other requirements.txt files from subfolders just to make easier to create virtualenv for development
-#it can be done by executing:
-#find . -name requirements.txt -exec cat {}  >> requirements-dev.txt \; 
-Django==1.10
-psycopg2==2.6.2
-gunicorn==19.4.5
-django-blog-zinnia==0.18
+when-changed==0.3.0
