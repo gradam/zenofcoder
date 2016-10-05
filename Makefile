@@ -13,7 +13,7 @@ build-data:
 build-server:
 	@docker-compose build server
 build-client:
-    @docker-compose build client
+	@docker-compose build client
 build-base:
 	@docker build -t zenofcoder/base -f ./base/Dockerfile-base ./base
 build-nginx:
@@ -60,7 +60,7 @@ stop-data:
 stop-server:
 	-@docker stop --time=1 $(CONTS-SERVER)
 stop-client:
-    -@docker stop $(CONTS-CLIENT)
+	-@docker stop $(CONTS-CLIENT)
 stop-nginx:
 	-@docker stop $(CONTS-NGINX)
 stop:
@@ -73,7 +73,7 @@ start-db:
 start-server:
 	@docker start zenofcoder-web-server
 start-client:
-    @docker start zenofcoder-web-client
+	@docker start zenofcoder-web-client
 start-nginx:
 	@docker start zenofcoder-nginx
 start: start-db start-server start-client start-nginx
@@ -86,7 +86,7 @@ rm-db:
 rm-server:
 	-@docker rm $(CONTS-SERVER)
 rm-client:
-    -@docker rm $(CONTS-CLIENT)
+	-@docker rm $(CONTS-CLIENT)
 rm-nginx:
 	-@docker rm $(CONTS-NGINX)
 rm: rm-db rm-server rm-client rm-nginx
@@ -100,7 +100,7 @@ rmi-db:
 rmi-server:
 	-@docker rmi -f $(IMGS-SERVER)
 rmi-client:
-    -@docker rmi -f $(IMGS-CLIENT)
+	-@docker rmi -f $(IMGS-CLIENT)
 rmi-nginx:
 	-@docker rmi -f $(IMGS-NGINX)
 rmi-base:
@@ -133,14 +133,14 @@ rebuild: clean-all build
 shell-server:
 	@docker exec -it zenofcoder-web-server bash
 shell-client:
-    @docker exec -it zenofcoder-web-client bash
+	@docker exec -it zenofcoder-web-client bash
 shell-db:
 	@docker exec -it zenofcoder-db bash
 
 logs-server:
 	@docker-compose logs -f | grep zenofcoder-web-server
 logs-client:
-    @docker-compose logs -f | grep zenofcoder-web-client
+	@docker-compose logs -f | grep zenofcoder-web-client
 logs-db:
 	@docker-compose logs -f | grep zenofcoder-db
 logs-https:
