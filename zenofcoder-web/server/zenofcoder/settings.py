@@ -37,10 +37,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     # Third party
     'django_comments',                      # https://github.com/django/django-contrib-comments
     'tagging',                              # https://github.com/Fantomas42/django-tagging
-    'rest_framework'                        # http://www.django-rest-framework.org/
+    'rest_framework',                        # http://www.django-rest-framework.org/
     # OAuth                                 # https://github.com/PhilipGarnero/django-rest-framework-social-oauth2
     'oauth2_provider',
     'social.apps.django_app.default',
@@ -85,17 +86,19 @@ WSGI_APPLICATION = 'zenofcoder.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ["DB_NAME"],
-        'USER': os.environ["DB_USER"],
-        'PASSWORD': os.environ["DB_PASS"],
-        'HOST': 'zenofcoder-db',
-        'PORT': int(os.environ["DB_PORT"])
+try:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ["DB_NAME"],
+            'USER': os.environ["DB_USER"],
+            'PASSWORD': os.environ["DB_PASS"],
+            'HOST': 'zenofcoder-db',
+            'PORT': int(os.environ["DB_PORT"])
+        }
     }
-}
-
+except KeyError:
+    pass
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -109,6 +112,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+SITE_ID = 1
 
 
 # Static files (CSS, JavaScript, Images)
@@ -146,7 +151,7 @@ LOGGING = {
         'error_log': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/opt/zenofcoder/logs/django-errors.log',
+            'filename': LOGS_DIR + 'django-errors.log',
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 10,
             'formatter': 'standard'
@@ -154,7 +159,7 @@ LOGGING = {
         'debug_log': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/opt/zenofcoder/logs/django-debugmess.log',
+            'filename': LOGS_DIR + 'django-debugmess.log',
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 10,
             'formatter': 'standard'

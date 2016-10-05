@@ -9,7 +9,7 @@ echo "from django.contrib.auth.models import User;User.objects.create_superuser(
 /usr/local/bin/gunicorn zenofcoder.wsgi:application \
 --name zenofcoder_django \
 --bind 0.0.0.0:8000 \
---workers 2 \
+--workers 1 \
 --log-level=debug \
 --reload \
 --error-logfile=/opt/zenofcoder/logs/gunicorn-error.log \

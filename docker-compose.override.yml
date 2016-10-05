@@ -2,7 +2,7 @@ version: '2'
 services:
   server:
     volumes:
-      - ./zenofcoder-web/server/:/opt/zenofcoder/zenofcoder-web/server
+      - ./zenofcoder-web/server/:/opt/zenofcoder/zenofcoder-web/server/
     command: bash web-development.sh
   
   client:

@@ -1,8 +1,9 @@
 virtenv
 __pycache__
-db.sqlite3
+*.sqlite3
 .idea/
 node_modules
 typings
 TODO.txt
 .env
+npm-debug.log
