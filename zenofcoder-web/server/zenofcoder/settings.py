@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-LOGS_DIR = '/opt/zenofcoder/logs/'
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -22,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=ol$^&d*^9eh)=&!qn4w5a!f+_ctgai7*agx@nd&st&oq3^3to'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,11 +38,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third party
-    'django_comments',
-    'mptt',
-    'tagging',
-    'zinnia',                   # https://github.com/Fantomas42/django-blog-zinnia
-    'social_auth',              # https://github.com/omab/django-social-auth
+    'django_comments',                      # https://github.com/django/django-contrib-comments
+    'tagging',                              # https://github.com/Fantomas42/django-tagging
+    'rest_framework'                        # http://www.django-rest-framework.org/
+    # OAuth                                 # https://github.com/PhilipGarnero/django-rest-framework-social-oauth2
+    'oauth2_provider',
+    'social.apps.django_app.default',
+    'rest_framework_social_oauth2',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -71,6 +71,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # OAuth
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect',
             ],
         },
     },
@@ -115,6 +118,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = "/opt/zenofcoder/static"
 
 # Logging settings
+LOGS_DIR = '/opt/zenofcoder/logs/'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -178,3 +183,42 @@ LOGGING = {
         }
     }
 }
+
+# DRF
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        # OAuth
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    )
+}
+
+# OAuth
+
+AUTHENTICATION_BACKENDS = (
+    # Facebook OAuth2
+    'social.backends.facebook.FacebookAppOAuth2',
+    'social.backends.facebook.FacebookOAuth2',
+    # django-rest-framework-social-oauth2
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
+
+)
+
+SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get('SOCIAL_AUTH_FACEBOOK_SECRET')
+
+# Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook.
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
