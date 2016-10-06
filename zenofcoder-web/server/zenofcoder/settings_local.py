@@ -2,21 +2,14 @@
 # encoding: utf-8
 from os import path
 import dotenv
-from .settings import *
+
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-dotenv_path = path.join(path.dirname(__file__), '..', '..', '..', '.env')
+dotenv_path = path.join(path.dirname(__file__), '..', '.env_local')
 dotenv.load_dotenv(dotenv_path)
-
+from .settings import *
 
 SECRET_KEY = 'jh^r@e8q&i#p^(u2#dyxn-n2+!2%u8zuv_5wkovbzg9ftqy9a$'
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'test_db.sqlite3'),
-    }
-}
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',

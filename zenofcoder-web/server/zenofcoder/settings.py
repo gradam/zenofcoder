@@ -39,13 +39,15 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     # Third party
-    'django_comments',                      # https://github.com/django/django-contrib-comments
-    'tagging',                              # https://github.com/Fantomas42/django-tagging
-    'rest_framework',                        # http://www.django-rest-framework.org/
-    # OAuth                                 # https://github.com/PhilipGarnero/django-rest-framework-social-oauth2
+    'django_comments',  # https://github.com/django/django-contrib-comments
+    'rest_framework',  # http://www.django-rest-framework.org/
+    # OAuth  # https://github.com/PhilipGarnero/django-rest-framework-social-oauth2
     'oauth2_provider',
     'social.apps.django_app.default',
     'rest_framework_social_oauth2',
+
+    # My apps
+    'articles.apps.ArticlesConfig'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -86,19 +88,16 @@ WSGI_APPLICATION = 'zenofcoder.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-try:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ["DB_NAME"],
-            'USER': os.environ["DB_USER"],
-            'PASSWORD': os.environ["DB_PASS"],
-            'HOST': 'zenofcoder-db',
-            'PORT': int(os.environ["DB_PORT"])
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ["DB_NAME"],
+        'USER': os.environ["DB_USER"],
+        'PASSWORD': os.environ["DB_PASS"],
+        'HOST': os.environ['DB_HOST'],
+        'PORT': int(os.environ["DB_PORT"])
     }
-except KeyError:
-    pass
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -227,3 +226,6 @@ SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get('SOCIAL_AUTH_FACEBOOK_SECRET')
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook.
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+# Taggit
+TAGGIT_CASE_INSENSITIVE = True
