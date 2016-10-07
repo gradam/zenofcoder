@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.db import models
 from django.contrib.postgres import fields
 from django.utils import timezone
@@ -14,7 +16,20 @@ class Article(models.Model):
                                             help_text='Time of publication, can be feature.')
     tags = fields.ArrayField(models.CharField(max_length=100), blank=True)
 
+    def add_tags(self, *tags_to_add: str):
+        """
+        :param tags_to_add: Tag or tags to add to existing tags.
+        """
+        self.tags = list({tag for tag in chain(self.tags, tags_to_add)})
+
+    def remove_tags(self, *tags_to_remove: str):
+        """
+        :param tags_to_remove: Tag or tags to remove from existing tags
+        """
+        self.tags = list({tag for tag in self.tags if tag not in tags_to_remove})
+
+    def published(self) -> bool:
+        return timezone.now() > self.publication_date
+
     def __str__(self):
         return self.title
-
-
