@@ -10,22 +10,20 @@ build-db:
 	@docker-compose build db
 build-data:
 	@docker-compose build data
-build-server:
-	@docker-compose build server
-build-client:
-	@docker-compose build client
+build-web:
+	@docker-compose build web
 build-base:
 	@docker build -t zenofcoder/base -f ./base/Dockerfile-base ./base
 build-nginx:
 	@docker-compose build nginx
-build: build-data build-db build-nginx build-base build-server build-client
+build: build-data build-db build-nginx build-base build-web build-client
 
 
 #run docker images
 run-db:
 	@docker-compose up data db
-run-server:
-	@docker-compose up server
+run-web:
+	@docker-compose up web
 run-nginx:
 	@docker-compose up nginx
 run:
@@ -41,11 +39,8 @@ IMGS-DB=$(shell docker images -q -f "label=application=zenofcoder-db")
 CONTS-DATA=$(shell docker ps -a -q -f "name=zenofcoder-data")
 IMGS-DATA=$(shell docker images -q -f "label=application=zenofcoder-data")
 
-CONTS-SERVER=$(shell docker ps -a -q -f "name=zenofcoder-web-server")
-IMGS-SERVER=$(shell docker images -q -f "label=application=zenofcoder-web-server")
-
-CONTS-CLIENT=$(shell docker ps -a -q -f "name=zenofcoder-web-client")
-IMGS-CLIENT=$(shell docker images -a -q -f "name=zenofcoder-web-client")
+CONTS-web=$(shell docker ps -a -q -f "name=zenofcoder-web")
+IMGS-web=$(shell docker images -q -f "label=application=zenofcoder-web")
 
 CONTS-NGINX=$(shell docker ps -a -q -f "name=zenofcoder-nginx")
 IMGS-NGINX=$(shell docker images -q -f "label=application=zenofcoder-nginx")
@@ -57,10 +52,8 @@ stop-db:
 	-@docker stop $(CONTS-DB)
 stop-data:
 	-@docker stop $(CONTS-DATA)
-stop-server:
-	-@docker stop --time=1 $(CONTS-SERVER)
-stop-client:
-	-@docker stop $(CONTS-CLIENT)
+stop-web:
+	-@docker stop --time=1 $(CONTS-web)
 stop-nginx:
 	-@docker stop $(CONTS-NGINX)
 stop:
@@ -70,26 +63,22 @@ stop:
 start-db:
 	@docker start zenofcoder-data
 	@docker start zenofcoder-db
-start-server:
-	@docker start zenofcoder-web-server
-start-client:
-	@docker start zenofcoder-web-client
+start-web:
+	@docker start zenofcoder-web
 start-nginx:
 	@docker start zenofcoder-nginx
-start: start-db start-server start-client start-nginx
+start: start-db start-web start-nginx
 
 #remove docker containers
 rm-data:
 	-@docker rm $(CONTS-DATA)
 rm-db:
 	-@docker rm $(CONTS-DB)
-rm-server:
-	-@docker rm $(CONTS-SERVER)
-rm-client:
-	-@docker rm $(CONTS-CLIENT)
+rm-web:
+	-@docker rm $(CONTS-web)
 rm-nginx:
 	-@docker rm $(CONTS-NGINX)
-rm: rm-db rm-server rm-client rm-nginx
+rm: rm-db rm-web rm-nginx
 
 
 #remove docker images
@@ -97,28 +86,25 @@ rmi-data:
 	-@docker rmi -f $(IMGS-DATA)
 rmi-db:
 	-@docker rmi -f $(IMGS-DB)
-rmi-server:
-	-@docker rmi -f $(IMGS-SERVER)
-rmi-client:
-	-@docker rmi -f $(IMGS-CLIENT)
+rmi-web:
+	-@docker rmi -f $(IMGS-web)
 rmi-nginx:
 	-@docker rmi -f $(IMGS-NGINX)
 rmi-base:
 	-@docker rmi -f $(IMGS-BASE)
-rmi: rmi-db rmi-server rmi-client rmi-nginx
+rmi: rmi-db rmi-web rmi-nginx
 
 
 # stop containters, remove containers, remove images
 clean-db: stop-db rm-db rmi-db
-clean-server: stop-server rm-server rmi-server
-clean-client: stop-client rm-client rmi-client
+clean-web: stop-web rm-web rmi-web
 clean-nginx: stop-nginx rm-nginx rmi-nginx
 clean-apps: clean-db clean-web clean-nginx
 clean-base: rmi-base
 clean-data: stop-data rm-data rmi-data
 clean-compose:
 	@docker-compose rm -f
-clean-all: clean-db clean-server clean-client clean-nginx clean-data clean-base clean-compose
+clean-all: clean-db clean-web clean-nginx clean-data clean-base clean-compose
 
 reload-nginx:
 	@make clean-nginx
@@ -130,17 +116,13 @@ reload-nginx:
 rebuild: clean-all build
 
 # open shell in container
-shell-server:
-	@docker exec -it zenofcoder-web-server bash
-shell-client:
-	@docker exec -it zenofcoder-web-client bash
+shell-web:
+	@docker exec -it zenofcoder-web bash
 shell-db:
 	@docker exec -it zenofcoder-db bash
 
-logs-server:
-	@docker-compose logs -f | grep zenofcoder-web-server
-logs-client:
-	@docker-compose logs -f | grep zenofcoder-web-client
+logs-web:
+	@docker-compose logs -f | grep zenofcoder-web
 logs-db:
 	@docker-compose logs -f | grep zenofcoder-db
 logs-https:
@@ -156,4 +138,4 @@ reload_static:
 
 # Reload static files automatically after every change.
 dev_static:
-	@when-changed -1 -v -r `find ./zenofcoder-web/server/* -name 'static'` -c make reload_static
+	@when-changed -1 -v -r `find ./zenofcoder-web/web/* -name 'static'` -c make reload_static

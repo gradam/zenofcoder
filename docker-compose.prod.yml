@@ -1,9 +1,9 @@
 version: '2'
 services:
-  server:
+  web:
     build:
-      context: ./zenofcoder-web/server
-      dockerfile: Dockerfile-web-server
+      context: ./zenofcoder-web
+      dockerfile: Dockerfile-web
     restart: always
     command: bash web-production.sh
 

@@ -1,15 +1,9 @@
 version: '2'
 services:
-  server:
+  web:
     volumes:
-      - ./zenofcoder-web/server/:/opt/zenofcoder/zenofcoder-web/server/
+      - ./zenofcoder-web/:/opt/zenofcoder/zenofcoder-web/
     command: bash web-development.sh
-  
-  client:
-    restart: unless-stopped
-    volumes:
-      - ./zenofcoder-web/client/:/opt/zenofcoder/zenofcoder-web/client/
-    command: npm start
 
   nginx:
     volumes:

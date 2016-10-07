@@ -1,10 +1,8 @@
 # encoding: utf-8
+import pytest
+from articles.models import Article
 from django.contrib.auth.models import User
 from django.utils import timezone
-
-import pytest
-
-from articles.models import Article
 
 ARTICLE_TEXT = """
 If you don’t specify primary_key=True for any fields in your model, Django will automatically

@@ -40,11 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     # Third party
     'django_comments',  # https://github.com/django/django-contrib-comments
-    'rest_framework',  # http://www.django-rest-framework.org/
-    # OAuth  # https://github.com/PhilipGarnero/django-rest-framework-social-oauth2
-    'oauth2_provider',
-    'social.apps.django_app.default',
-    'rest_framework_social_oauth2',
 
     # My apps
     'articles.apps.ArticlesConfig'
