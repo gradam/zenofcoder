@@ -1,14 +1,14 @@
 version: '2'
 
 services:
-  web:
+  server:
     env_file: .env
-    container_name: "zenofcoder-web"
+    container_name: "zenofcoder-web-server"
     build:
-      context: ./zenofcoder-web
-      dockerfile: Dockerfile-web
+      context: ./zenofcoder-web/server
+      dockerfile: Dockerfile-web-server
     labels:
-      application: "zenofcoder-web"
+      application: "zenofcoder-web-server"
     volumes:
       - /opt/zenofcoder/static
       - /opt/zenofcoder/logs
@@ -18,19 +18,29 @@ services:
       - db
       - redis
 
+  client:
+    build:
+      context: ./zenofcoder-web/client
+      dockerfile: Dockerfile-web-client
+    container_name: "zenofcoder-web-client"
+    labels:
+      application: "zenofcoder-web-client"
+
   nginx:
     container_name: "zenofcoder-nginx"
     build:
       context: ./nginx
       dockerfile: Dockerfile-nginx
     volumes_from:
-      - web
+      - server
+      - client
     ports:
       - "80:80"
     labels:
       application: "zenofcoder-nginx"
     depends_on:
-      - web
+      - server
+
 
   redis:
     image: redis:latest

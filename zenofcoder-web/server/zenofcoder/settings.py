@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     # Third party
     'django_comments',  # https://github.com/django/django-contrib-comments
-    # Allaouth
+    # Allaouth          # https://django-allauth.readthedocs.io/en/latest/index.html
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -49,6 +49,12 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
+    # DRF
+    'rest_framework',
+    'rest_framework.authtoken',
+    # Django-rest-auth
+    'rest_auth',
+    'rest_auth.registration',
     # My apps
     'articles.apps.ArticlesConfig'
 )
