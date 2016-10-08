@@ -6,7 +6,7 @@ services:
     container_name: "zenofcoder-web"
     build:
       context: ./zenofcoder-web
-      dockerfile: Dockerfile-web-server
+      dockerfile: Dockerfile-web
     labels:
       application: "zenofcoder-web"
     volumes:
@@ -24,14 +24,13 @@ services:
       context: ./nginx
       dockerfile: Dockerfile-nginx
     volumes_from:
-      - server
+      - web
     ports:
       - "80:80"
     labels:
       application: "zenofcoder-nginx"
     depends_on:
-      - server
-
+      - web
 
   redis:
     image: redis:latest

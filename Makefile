@@ -120,6 +120,8 @@ shell-web:
 	@docker exec -it zenofcoder-web bash
 shell-db:
 	@docker exec -it zenofcoder-db bash
+shell-nginx:
+	@docker exec -it zenofcoder-nginx bash
 
 logs-web:
 	@docker-compose logs -f | grep zenofcoder-web

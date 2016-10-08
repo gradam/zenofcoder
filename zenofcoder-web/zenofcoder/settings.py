@@ -40,7 +40,15 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     # Third party
     'django_comments',  # https://github.com/django/django-contrib-comments
-
+    # Allaouth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.bitbucket',
+    'allauth.socialaccount.providers.bitbucket_oauth2',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
     # My apps
     'articles.apps.ArticlesConfig'
 )
@@ -69,9 +77,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # OAuth
-                'social.apps.django_app.context_processors.backends',
-                'social.apps.django_app.context_processors.login_redirect',
             ],
         },
     },
@@ -93,6 +98,13 @@ DATABASES = {
         'PORT': int(os.environ["DB_PORT"])
     }
 }
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -203,24 +215,9 @@ REST_FRAMEWORK = {
     )
 }
 
-# OAuth
-
-AUTHENTICATION_BACKENDS = (
-    # Facebook OAuth2
-    'social.backends.facebook.FacebookAppOAuth2',
-    'social.backends.facebook.FacebookOAuth2',
-    # django-rest-framework-social-oauth2
-    'rest_framework_social_oauth2.backends.DjangoOAuth2',
-    # Django
-    'django.contrib.auth.backends.ModelBackend',
-
-)
-
-SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get('SOCIAL_AUTH_FACEBOOK_KEY')
-SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get('SOCIAL_AUTH_FACEBOOK_SECRET')
-
-# Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook.
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
-
-# Taggit
-TAGGIT_CASE_INSENSITIVE = True
+# Allauth
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = False
