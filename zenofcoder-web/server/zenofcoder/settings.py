@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     # Third party
-    'django_comments',  # https://github.com/django/django-contrib-comments
     # Allaouth          # https://django-allauth.readthedocs.io/en/latest/index.html
     'allauth',
     'allauth.account',
@@ -52,11 +51,12 @@ INSTALLED_APPS = (
     # DRF
     'rest_framework',
     'rest_framework.authtoken',
-    # Django-rest-auth
+    # Django-rest-auth          # https://github.com/Tivix/django-rest-auth
     'rest_auth',
     'rest_auth.registration',
     # My apps
-    'articles.apps.ArticlesConfig'
+    'articles.apps.ArticlesConfig',
+    'comments.apps.CommentsConfig'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -131,8 +131,11 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'http://static.zenofcoder.com/static/'
 STATIC_ROOT = "/opt/zenofcoder/static"
+
+MEDIA_URL = 'http://static.zenofcoder.com/media/'
+MEDIA_ROOT = '/opt/zenofcoder/media'
 
 # Logging settings
 LOGS_DIR = '/opt/zenofcoder/logs/'
@@ -201,25 +204,6 @@ LOGGING = {
     }
 }
 
-# DRF
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
-    ),
-    'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
-        'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser'
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        # OAuth
-        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
-        'rest_framework_social_oauth2.authentication.SocialAuthentication',
-    )
-}
 
 # Allauth
 ACCOUNT_EMAIL_REQUIRED = True

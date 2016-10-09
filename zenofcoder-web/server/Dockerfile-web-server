@@ -1,2 +1,4 @@
 FROM zenofcoder/base
+RUN mkdir -p $DIRPATH/zenofcoder-web/server
+WORKDIR $DIRPATH/zenofcoder-web/server
 COPY . .

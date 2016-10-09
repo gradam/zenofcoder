@@ -1,7 +1,5 @@
 FROM python:3.5.2
 ENV DIRPATH /opt/zenofcoder
-RUN mkdir -p $DIRPATH/zenofcoder-web
-WORKDIR $DIRPATH/zenofcoder-web
 COPY requirements.txt .
 RUN apt-get update \
 	&& apt-get -y install vim
