@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -29,7 +30,7 @@ class CommentManager(models.Manager):
                     instance.parent = parent
                 instance.save()
                 return instance
-        return None
+        raise ValidationError('None existing model type.')
 
 
 class Comment(models.Model):

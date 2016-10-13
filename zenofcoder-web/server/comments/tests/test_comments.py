@@ -1,4 +1,6 @@
 # encoding: utf-8
+from django.core.exceptions import ValidationError
+
 import pytest
 from articles.tests.test_articles import BaseTestClass
 from articles.models import Article
@@ -39,8 +41,8 @@ class TestComments(BaseTestClass):
         comment_parent_0 = self.create_comment(user, base_article)
         comment_parent_1 = self.create_comment(user, base_article)
         comment_parent_2 = self.create_comment(user, base_article, parent=comment_parent_1)
-        comment_child_1 = self.create_comment(user, base_article, parent=comment_parent_2)
-        comment_child_2 = self.create_comment(user, base_article, parent=comment_parent_2)
+        self.create_comment(user, base_article, parent=comment_parent_2)
+        self.create_comment(user, base_article, parent=comment_parent_2)
 
         assert list(Comment.objects.filter_top_lever()) == [comment_parent_1, comment_parent_0]
 
@@ -51,5 +53,5 @@ class TestComments(BaseTestClass):
         assert not comment_child.is_parent
 
     def test_create_for_nonexistent_model(self, user, base_article: Article):
-        comment = self.create_comment(user, base_article, model_type='non_existing_one')
-        assert comment is None
+        with pytest.raises(ValidationError):
+            self.create_comment(user, base_article, model_type='non_existing_one')
