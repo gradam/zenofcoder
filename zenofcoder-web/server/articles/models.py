@@ -6,10 +6,8 @@ from django.contrib.postgres import fields
 from django.utils import timezone
 from django.conf import settings
 from django.utils.text import slugify
-from django.utils.safestring import mark_safe
 from django.db.models import signals
 
-import markdown2
 
 from comments.models import Comment
 
@@ -60,7 +58,7 @@ def create_slug(instance: Article, new_slug=None):
         slug = new_slug
     qs = Article.objects.filter(slug=slug).order_by('-id')
     if qs.exists():
-        new_slug = '{}-{}'.format(slug, qs.first().id)
+        new_slug = '{}-{}'.format(slug, qs.first().id+1)
         return create_slug(instance, new_slug=new_slug)
     return slug
 

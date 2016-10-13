@@ -2,7 +2,7 @@
 import pytest
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from articles.models import Article
+from articles.models import Article, create_slug
 
 
 User = get_user_model()
@@ -30,7 +30,7 @@ class BaseTestClass:
         return self.create_article(author=admin_user, tags=['test', 'article', 'admin'])
 
     @staticmethod
-    def create_article(author, title='Test_article', content=ARTICLE_TEXT,
+    def create_article(author, title='Test article', content=ARTICLE_TEXT,
                        tags=None, **kwargs) -> Article:
         if tags is None:
             tags = []
@@ -73,3 +73,13 @@ class TestArticleModel(BaseTestClass):
 
     def test_str_representation(self, base_article: Article):
         assert str(base_article) == base_article.title
+
+    def test_create_slug(self, base_article: Article):
+        create_slug(base_article)
+        assert base_article.slug == 'test-article'
+
+    def test_pre_save_article_receiver_multiple_slug(self, admin_user: User):
+        article1 = self.create_article(author=admin_user)
+        article2 = self.create_article(author=admin_user)
+        assert article1.slug == 'test-article'
+        assert article2.slug == 'test-article-{}'.format(article1.pk+1)

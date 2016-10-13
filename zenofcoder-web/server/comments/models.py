@@ -15,7 +15,7 @@ class CommentManager(models.Manager):
         qs = self.filter(parent__isnull=True)
         return qs
 
-    def create_by_model_type(self, model_type, slug, content, user, parent=None):
+    def create_by_model_type(self, model_type: str, slug: str, content: str, user, parent=None):
         model_qs = ContentType.objects.filter(model=model_type)
         if model_qs.exists():
             SomeModel = model_qs.first().model_class()
