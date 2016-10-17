@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from django.shortcuts import get_object_or_404, get_list_or_404
 
 from .models import Article
@@ -15,10 +16,18 @@ class ArticlesByTags(APIView):
 
 
 class ArticleDetail(APIView):
-    def get(self, request, id: str) -> Response:
-        qs = get_object_or_404(Article, pk=id)
+    def get(self, request, **kwargs) -> Response:
+        qs = get_object_or_404(Article, **kwargs)
         serializer = ArticleDetailSerializer(qs)
         return Response(serializer.data)
+
+    def post(self, request, **kwargs) -> Response:
+        instance = get_object_or_404(Article, **kwargs)
+        serializer = ArticleDetailSerializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ArticlesList(APIView):

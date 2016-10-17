@@ -1,13 +1,11 @@
-import re
 from itertools import chain
-from typing import List
+from typing import List, Union
 
 from django.db import models
 from django.contrib.postgres import fields
 from django.utils import timezone
 from django.conf import settings
 from django.utils.text import slugify
-from django.db.models import signals
 
 
 from comments.models import Comment
@@ -39,6 +37,11 @@ class Article(models.Model):
         """
         self.tags = list({tag for tag in self.tags if tag not in tags_to_remove})
 
+    def save(self, *args, **kwargs):
+        slug = create_slug(self.title)
+        self.slug = slug
+        return super().save(*args, **kwargs)
+
     @property
     def published(self) -> bool:
         return timezone.now() > self.publication_date
@@ -53,28 +56,17 @@ class Article(models.Model):
         return self.title
 
 
-def create_slug(instance: Article, new_slug=None):
-    slug = slugify(instance.title)
+def create_slug(title: Union[str, models.TextField], new_slug=None):
+    slug = slugify(title)
     if new_slug is not None:
         slug = new_slug
     qs = Article.objects.filter(slug=slug).order_by('-id')
     if qs.exists():
-        latest = Article.objects.filter(title=instance.title).order_by('slug')[0]
+        latest = Article.objects.filter(title=title).order_by('slug')[0]
         try:
             number = int(latest.slug.split('-')[-1])
         except ValueError:
             number = 1
         new_slug = '{}-{}'.format(slug, number+1)
-        return create_slug(instance, new_slug=new_slug)
+        return create_slug(title, new_slug=new_slug)
     return slug
-
-
-def pre_save_article_receiver(sender, instance: Article, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = create_slug(instance)
-
-
-signals.pre_save.connect(pre_save_article_receiver, sender=Article)
-
-
-

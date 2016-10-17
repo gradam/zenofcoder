@@ -47,14 +47,14 @@ class TestArticleModel(BaseTestClass):
         create_slug(base_article)
         assert base_article.slug == 'test-article'
 
-    def test_pre_save_article_receiver_multiple_slug(self, admin_user: User):
+    def test_multiple_slug(self, admin_user: User):
         article1 = self.create_article(author=admin_user)
         article2 = self.create_article(author=admin_user)
         articles_number = len(Article.objects.filter(title=article1.title))
         assert article1.slug == 'test-article'
         assert article2.slug == 'test-article-{}'.format(articles_number)
 
-    def test_pre_save_article_receiver_multiple_slug_2(self, admin_user: User):
+    def test_multiple_slug_2(self, admin_user: User):
         article1 = self.create_article(author=admin_user)
         article2 = self.create_article(author=admin_user, title='Different title')
         article3 = self.create_article(author=admin_user)
