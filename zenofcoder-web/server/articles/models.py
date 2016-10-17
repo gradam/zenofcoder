@@ -1,3 +1,4 @@
+import re
 from itertools import chain
 from typing import List
 
@@ -58,7 +59,12 @@ def create_slug(instance: Article, new_slug=None):
         slug = new_slug
     qs = Article.objects.filter(slug=slug).order_by('-id')
     if qs.exists():
-        new_slug = '{}-{}'.format(slug, qs.first().id+1)
+        latest = Article.objects.filter(title=instance.title).order_by('slug')[0]
+        try:
+            number = int(latest.slug.split('-')[-1])
+        except ValueError:
+            number = 1
+        new_slug = '{}-{}'.format(slug, number+1)
         return create_slug(instance, new_slug=new_slug)
     return slug
 
