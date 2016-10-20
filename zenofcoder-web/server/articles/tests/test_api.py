@@ -1,8 +1,11 @@
 # encoding: utf-8
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.test import APIClient
 from rest_framework import status
+
+import pytest
 
 from articles.models import Article, create_slug
 from articles.serializers import ArticleDetailSerializer, ArticlesListSerializer
@@ -60,6 +63,21 @@ class TestArticleApiEndpoint(BaseTestClass):
         pk = response.data['pk']
         new_article = Article.objects.get(pk=pk)
         assert response.data == ArticleDetailSerializer(new_article).data
+
+    def test_delete_article_by_id(self, base_article: Article):
+        url = reverse('articles:id', kwargs={'id': base_article.id})
+        response = self.client.delete(url, format='json')
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        with pytest.raises(ObjectDoesNotExist):
+            Article.objects.get(id=base_article.id)
+
+    def test_delete_article_by_slug(self, base_article: Article):
+        url = reverse('articles:slug', kwargs={'slug': base_article.slug})
+        response = self.client.delete(url, format='json')
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        with pytest.raises(ObjectDoesNotExist):
+            Article.objects.get(slug=base_article.slug)
+
 
     def test_get_by_slug(self, base_article: Article):
         url = reverse('articles:slug', kwargs={'slug': base_article.slug})
