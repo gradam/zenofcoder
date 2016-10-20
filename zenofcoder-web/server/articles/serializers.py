@@ -33,8 +33,14 @@ class ArticleDetailSerializer(BaseArticleSerializer):
     def create(self, validated_data) -> Article:
         tags = validated_data.pop('tags')
         article = Article.objects.create(**validated_data)
-        article.add_tags(*tags)
+        article.add_tags([tag['tag'] for tag in tags])
         return article
+
+    def update(self, instance: Article, validated_data):
+        if 'tags' in validated_data:
+            tags = validated_data.pop('tags')
+            instance.set_tags([tag['tag'] for tag in tags])
+        return super().update(instance, validated_data)
 
 
 class ArticlesListSerializer(BaseArticleSerializer):

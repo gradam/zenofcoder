@@ -43,20 +43,20 @@ class Article(models.Model):
         super().save(*args, **kwargs)
         self.__original_title = self.title
 
-    def add_tags(self, *tags_to_add: str):
+    def add_tags(self, tags_to_add: str):
         for tag in tags_to_add:
             self.tags.add(Tag.objects.get_or_create(tag=tag)[0])
 
-    def remove_tags(self, *tags_to_remove):
+    def remove_tags(self, tags_to_remove):
         qs = Tag.objects.filter(tag__in=tags_to_remove)
         self.tags.remove(*qs)
 
-    @property
-    def contain_tags(self, tags):
-        if set(tags).issubset(self.tags):
-            return True
-        return False
+    def get_tags(self):
+        return [tag.tag for tag in self.tags.all()]
 
+    def set_tags(self, tags):
+        tags = [Tag.objects.get_or_create(tag=tag)[0] for tag in tags]
+        self.tags.set(tags)
 
     @property
     def published(self) -> bool:

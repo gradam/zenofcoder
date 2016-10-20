@@ -31,6 +31,15 @@ class TestArticleApiEndpoint(BaseTestClass):
         assert updated.title == new_title
         assert updated.slug == new_slug
 
+    def test_post_add_tags(self, base_article: Article):
+        url = reverse('articles:id', kwargs={'id': base_article.pk})
+        tags = base_article.get_tags() + ['some_new_tag1', 'some_new_tag2']
+        response = self.client.post(url, data={'tags': tags}, format='json')
+        updated = Article.objects.get(pk=base_article.pk)
+        assert response.status_code == status.HTTP_200_OK
+        t = updated.get_tags()
+        assert t == tags
+
     def test_post_article_not_valid_data(self, base_article: Article):
         url = reverse('articles:id', kwargs={'id': base_article.pk})
         response = self.client.post(url, data={'author': 'something'}, format='json')

@@ -19,12 +19,12 @@ class TestArticleModel(BaseTestClass):
         assert [base_article] == list(Article.objects.filter(tags__tag='test'))
 
     def test_add_tags(self, base_article: Article):
-        base_article.add_tags('user', 'user2')
+        base_article.add_tags(['user', 'user2'])
         base_article.save()
         assert [base_article] == list(Article.objects.filter(tags__tag='user'))
 
     def test_remove_tags(self, base_article: Article):
-        base_article.remove_tags('test', 'article')
+        base_article.remove_tags(['test', 'article'])
         base_article.save()
         assert [base_article] == list(Article.objects.filter(tags__tag='admin'))
 
