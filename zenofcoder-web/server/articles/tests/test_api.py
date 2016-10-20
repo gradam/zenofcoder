@@ -47,7 +47,7 @@ class TestArticleApiEndpoint(BaseTestClass):
             'tags': ['tag1', 'tag2'],
         }
         url = reverse('articles:create')
-        response = self.client.put(url, data=data, format='json')
+        response = self.client.post(url, data=data, format='json')
         assert response.status_code == status.HTTP_201_CREATED
         assert Article.objects.all().count() == number_of_articles + 1
 
@@ -59,7 +59,7 @@ class TestArticleApiEndpoint(BaseTestClass):
             'tags': ['tag1', 'tag2'],
         }
         url = reverse('articles:create')
-        response = self.client.put(url, data=data, format='json')
+        response = self.client.post(url, data=data, format='json')
         pk = response.data['pk']
         new_article = Article.objects.get(pk=pk)
         assert response.data == ArticleDetailSerializer(new_article).data
@@ -77,7 +77,6 @@ class TestArticleApiEndpoint(BaseTestClass):
         assert response.status_code == status.HTTP_204_NO_CONTENT
         with pytest.raises(ObjectDoesNotExist):
             Article.objects.get(slug=base_article.slug)
-
 
     def test_get_by_slug(self, base_article: Article):
         url = reverse('articles:slug', kwargs={'slug': base_article.slug})

@@ -131,10 +131,6 @@ USE_TZ = True
 
 SITE_ID = 1
 
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -219,3 +215,9 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = False
+
+# Django debug toolbar
+INTERNAL_IPS = [
+    '172.23.0.6',
+    '172.0.0.1',
+    ]

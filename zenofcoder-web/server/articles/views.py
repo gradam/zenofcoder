@@ -3,12 +3,12 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework import mixins
 from rest_framework import generics
 
 from .models import Article
-from .serializers import ArticleDetailSerializer, ArticlesListSerializer
+from .serializers import ArticleDetailSerializer
+from .serializers import ArticlesListSerializer
 
 
 class MultipleFieldLookupMixin:
@@ -39,10 +39,10 @@ class ArticleDetail(MultipleFieldLookupMixin,
         return self.retrieve(request, **kwargs)
 
     def post(self, request, **kwargs) -> Response:
-        return self.update(request, **kwargs, partial=True)
-
-    def put(self, request) -> Response:
-        return self.create(request)
+        if kwargs.get('id') or kwargs.get('slug'):
+            return self.partial_update(request, partial=True)
+        else:
+            return self.create(request)
 
     def delete(self, request, **kwargs):
         return self.destroy(request, **kwargs)
@@ -61,4 +61,3 @@ class ArticlesList(APIView):
         qs = get_list_or_404(Article)
         serializer = ArticlesListSerializer(qs, many=True)
         return Response(serializer.data)
-
