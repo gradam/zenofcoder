@@ -20,8 +20,8 @@ class ArticleAdmin(admin.ModelAdmin):
         })
     )
 
-    list_display = ('author', 'title', 'tags')
-    search_fields = ('author', 'title', 'tags')
+    list_display = ('author', 'title')
+    search_fields = ('author', 'title')
     ordering = ('author', '-timestamp')
 
 admin.site.register(Article, ArticleAdmin)

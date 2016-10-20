@@ -1,14 +1,19 @@
-from itertools import chain
 from typing import List, Union
 
 from django.db import models
-from django.contrib.postgres import fields
 from django.utils import timezone
 from django.conf import settings
 from django.utils.text import slugify
 
 
 from comments.models import Comment
+
+
+class Tag(models.Model):
+    tag = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return '{}'.format(self.tag)
 
 
 class Article(models.Model):
@@ -19,28 +24,39 @@ class Article(models.Model):
     updated = models.DateTimeField(auto_now_add=True)
     publication_date = models.DateTimeField(default=timezone.now, blank=False,
                                             help_text='Time of publication, can be feature.')
+    tags = models.ManyToManyField(Tag)
     slug = models.SlugField(unique=True)
-    tags = fields.ArrayField(models.CharField(max_length=100), blank=True)
 
     class Meta:
         ordering = ['-timestamp', '-updated']
 
-    def add_tags(self, *tags_to_add: str):
-        """
-        :param tags_to_add: Tag or tags to add to existing tags.
-        """
-        self.tags = list({tag for tag in chain(self.tags, tags_to_add)})
+    __original_title = None
 
-    def remove_tags(self, *tags_to_remove: str):
-        """
-        :param tags_to_remove: Tag or tags to remove from existing tags
-        """
-        self.tags = list({tag for tag in self.tags if tag not in tags_to_remove})
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_title = self.title
 
     def save(self, *args, **kwargs):
-        slug = create_slug(self.title)
-        self.slug = slug
-        return super().save(*args, **kwargs)
+        if self.pk is None or self.title != self.__original_title:
+            slug = create_slug(self.title)
+            self.slug = slug
+        super().save(*args, **kwargs)
+        self.__original_title = self.title
+
+    def add_tags(self, *tags_to_add: str):
+        for tag in tags_to_add:
+            self.tags.add(Tag.objects.get_or_create(tag=tag)[0])
+
+    def remove_tags(self, *tags_to_remove):
+        qs = Tag.objects.filter(tag__in=tags_to_remove)
+        self.tags.remove(*qs)
+
+    @property
+    def contain_tags(self, tags):
+        if set(tags).issubset(self.tags):
+            return True
+        return False
+
 
     @property
     def published(self) -> bool:

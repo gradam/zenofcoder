@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import mixins
 from rest_framework import generics
 
-from .models import Article
+from .models import Article, Tag
 from .serializers import ArticleDetailSerializer
 from .serializers import ArticlesListSerializer
 
@@ -50,14 +50,18 @@ class ArticleDetail(MultipleFieldLookupMixin,
 
 class ArticlesByTags(APIView):
     def get(self, request, tags: str) -> Response:
-        tags = tags.split('/')
-        qs = get_list_or_404(Article, tags__contains=tags)
-        serializer = ArticlesListSerializer(qs, many=True)
+        tags = set(tags.split('/'))
+        qs = Article.objects.all()
+        result = []
+        for article in list(qs):
+            if tags.issubset({str(tag) for tag in article.tags.all()}):
+                result.append(article)
+        serializer = ArticlesListSerializer(result, many=True)
         return Response(serializer.data)
 
 
 class ArticlesList(APIView):
     def get(self, request) -> Response:
-        qs = get_list_or_404(Article)
+        qs = Article.objects.all()
         serializer = ArticlesListSerializer(qs, many=True)
         return Response(serializer.data)

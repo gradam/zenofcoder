@@ -105,6 +105,7 @@ class TestArticleApiEndpoint(BaseTestClass):
     def test_get_multiple_by_tags(self, admin_user: User):
         article1 = self.create_article(author=admin_user, tags=['test1', 'test2', 'test3'])
         article2 = self.create_article(author=admin_user, tags=['test1', 'test4', 'test3'])
+        article3 = self.create_article(author=admin_user, tags=['test1', 'test4', 'test33'])
         url = reverse('articles:tags', kwargs={'tags': 'test1/test3'})
         response = self.client.get(url, format='json')
         serializer = ArticlesListSerializer([article2, article1], many=True)

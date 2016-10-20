@@ -2,7 +2,7 @@
 from django.core.exceptions import ValidationError
 
 import pytest
-from articles.tests.test_articles import BaseTestClass
+from articles.tests.test_models import BaseTestClass
 from articles.models import Article
 from comments.models import Comment
 

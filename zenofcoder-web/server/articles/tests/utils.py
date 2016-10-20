@@ -1,6 +1,6 @@
 import pytest
 from django.contrib.auth import get_user_model
-from articles.models import Article
+from articles.models import Article, Tag
 
 
 User = get_user_model()
@@ -30,8 +30,11 @@ class BaseTestClass:
     @staticmethod
     def create_article(author, title='Test article', content=ARTICLE_TEXT,
                        tags=None, **kwargs) -> Article:
-        if tags is None:
-            tags = []
+        article = Article.objects.create(title=title, content=content, author=author, **kwargs)
 
-        return Article.objects.create(title=title, content=content, author=author,
-                                      tags=tags, **kwargs)
+        if tags:
+            tag_objs = [Tag.objects.get_or_create(tag=tag)[0] for tag in tags]
+            article.tags.set(tag_objs)
+            article.save()
+
+        return article

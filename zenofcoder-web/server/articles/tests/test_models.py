@@ -15,22 +15,18 @@ class TestArticleModel(BaseTestClass):
         article2 = self.create_article(author=admin_user,  title='test 2')
         assert [article2, article1] == list(Article.objects.filter(author=admin_user))
 
-    def test_tags(self, base_article: Article):
-        base_article.tags = ['test', 'article', 'admin']
-        assert {'test', 'article', 'admin'} == set(base_article.tags)
-
     def test_get_by_tag(self, base_article: Article):
-        assert [base_article] == list(Article.objects.filter(tags__contains=['test']))
+        assert [base_article] == list(Article.objects.filter(tags__tag='test'))
 
     def test_add_tags(self, base_article: Article):
         base_article.add_tags('user', 'user2')
         base_article.save()
-        assert [base_article] == list(Article.objects.filter(tags__contains=['user']))
+        assert [base_article] == list(Article.objects.filter(tags__tag='user'))
 
     def test_remove_tags(self, base_article: Article):
         base_article.remove_tags('test', 'article')
         base_article.save()
-        assert [base_article] == list(Article.objects.filter(tags__contains=['admin']))
+        assert [base_article] == list(Article.objects.filter(tags__tag='admin'))
 
     def test_published(self, base_article: Article):
         assert base_article.published
