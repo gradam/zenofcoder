@@ -6,7 +6,7 @@ from rest_framework import status
 
 from articles.models import Article, create_slug
 from articles.serializers import ArticleDetailSerializer, ArticlesListSerializer
-from .utils import BaseTestClass
+from .utils import BaseTestClass, User
 
 
 class TestArticleApiEndpoint(BaseTestClass):
@@ -35,13 +35,39 @@ class TestArticleApiEndpoint(BaseTestClass):
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert updated == base_article
 
+    def test_create_article(self, admin_user: User):
+        number_of_articles = Article.objects.all().count()
+        data = {
+            'title': 'Create test.',
+            'author': admin_user.pk,
+            'content': 'Some very interesting content',
+            'tags': ['tag1', 'tag2'],
+        }
+        url = reverse('articles:create')
+        response = self.client.put(url, data=data, format='json')
+        assert response.status_code == status.HTTP_201_CREATED
+        assert Article.objects.all().count() == number_of_articles + 1
+
+    def test_data_in_created_article(self, admin_user: User):
+        data = {
+            'title': 'Create test.',
+            'author': admin_user.pk,
+            'content': 'Some very interesting content',
+            'tags': ['tag1', 'tag2'],
+        }
+        url = reverse('articles:create')
+        response = self.client.put(url, data=data, format='json')
+        pk = response.data['pk']
+        new_article = Article.objects.get(pk=pk)
+        assert response.data == ArticleDetailSerializer(new_article).data
+
     def test_get_by_slug(self, base_article: Article):
         url = reverse('articles:slug', kwargs={'slug': base_article.slug})
         response = self.client.get(url, format='json')
         assert response.status_code == status.HTTP_200_OK
         assert response.data == ArticleDetailSerializer(base_article).data
 
-    def test_get_all_articles(self, admin_user):
+    def test_get_all_articles(self, admin_user: User):
         article1 = self.create_article(author=admin_user)
         article2 = self.create_article(author=admin_user)
         url = reverse('articles:all')
@@ -50,7 +76,7 @@ class TestArticleApiEndpoint(BaseTestClass):
         assert response.status_code == status.HTTP_200_OK
         assert response.data == serializer.data
 
-    def test_get_one_by_tags(self, admin_user):
+    def test_get_one_by_tags(self, admin_user: User):
         article1 = self.create_article(author=admin_user, tags=['test1', 'test2', 'test3'])
         article2 = self.create_article(author=admin_user, tags=['test1', 'test4', 'test3'])
         url = reverse('articles:tags', kwargs={'tags': 'test2/test1'})
@@ -59,7 +85,7 @@ class TestArticleApiEndpoint(BaseTestClass):
         assert response.status_code == status.HTTP_200_OK
         assert response.data == serializer.data
 
-    def test_get_multiple_by_tags(self, admin_user):
+    def test_get_multiple_by_tags(self, admin_user: User):
         article1 = self.create_article(author=admin_user, tags=['test1', 'test2', 'test3'])
         article2 = self.create_article(author=admin_user, tags=['test1', 'test4', 'test3'])
         url = reverse('articles:tags', kwargs={'tags': 'test1/test3'})

@@ -13,7 +13,8 @@ class TestArticleSerializer(BaseTestClass):
             'tags': base_article.tags,
             'timestamp': base_article.timestamp.strftime('%Y-%m-%d %H:%M'),
             'publication_date': base_article.publication_date.strftime('%Y-%m-%d %H:%M'),
-            'slug': base_article.slug
+            'slug': base_article.slug,
+            'pk': base_article.pk
         }
 
         assert serializer.data == data
