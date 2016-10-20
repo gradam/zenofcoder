@@ -54,12 +54,14 @@ INSTALLED_APPS = (
     # Django-rest-auth          # https://github.com/Tivix/django-rest-auth
     'rest_auth',
     'rest_auth.registration',
+    # Django-debug-toolbar     # https://github.com/jazzband/django-debug-toolbar
+    'debug_toolbar',
     # My apps
     'articles.apps.ArticlesConfig',
     'comments.apps.CommentsConfig'
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -68,7 +70,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-)
+    # debug-toolbar
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
 
 ROOT_URLCONF = 'zenofcoder.urls'
 
@@ -126,6 +130,10 @@ USE_L10N = True
 USE_TZ = True
 
 SITE_ID = 1
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 
 # Static files (CSS, JavaScript, Images)
